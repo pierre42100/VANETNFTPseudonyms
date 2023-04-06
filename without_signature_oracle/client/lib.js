@@ -588,7 +588,7 @@ export async function mintNFT(chal, pubKey, startTime, addr) {
 }
 
 export async function getNFT(addr, id) {
-  const c = startCall("getNFT");
+  const c = startCall("VcertNFT#getNFT");
   const res = await vehi_contract.methods.tokenURI(id).call({ from: addr });
   c.end(0);
 
