@@ -24,3 +24,12 @@ npx hardhat node
 # Deploy the SmartContracts locally
 npx hardhat run scripts/deploy.ts --network localhost
 ```
+
+## Deploy the project using Ganache instead
+```bash
+# Run ganache node
+docker run -p 8545:8545 --rm trufflesuite/ganache:v7.7.6 --wallet.deterministic --wallet.totalAccounts=5
+
+# Deploy the SmartContracts
+npx hardhat run scripts/deploy.ts --network ganache
+```

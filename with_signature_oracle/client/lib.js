@@ -6,18 +6,35 @@ import { readFileSync, writeFileSync } from "fs";
 
 export const CURVE = "secp256r1";
 export const SIG_ALG = "SHA256withECDSA";
+
 const SERVER = "127.0.0.1:8545";
-const TIME_SC_ADDR = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-const VEHI_SC_ADDR = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
-const ECA_SC_ADDR = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
-const CODES_FILE = "activation_codes.csv";
 
-export const ACCOUNTS = [
+let TIME_SC_ADDR = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+let VEHI_SC_ADDR = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+let ECA_SC_ADDR = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+
+let CODES_FILE = "activation_codes.csv";
+
+export let ACCOUNTS = [
   "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
   "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
   "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
 ];
+
+
+if(process.env.USE_GANACHE) {
+  TIME_SC_ADDR = "0x5b1869D9A4C187F2EAa108f3062412ecf0526b24"
+  VEHI_SC_ADDR = "0xCfEB869F69431e42cdB54A4F4f105C19C080A601"
+  ECA_SC_ADDR = "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
+
+  ACCOUNTS = [
+    "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1",
+    "0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0",
+    "0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b"
+  ]
+}
+
 
 const SIGN_PRI_KEY =
   "9ee5bc08f704ec88691546738886508db4acdd7c39e5242e5ded7d415fae0eec";
@@ -613,7 +630,7 @@ export async function pushCodes(addr, codes) {
   const c = startCall("ECA#addCode");
   const res = await eca_contract.methods
     .addCode(codesHashs)
-    .send({ from: addr });
+    .send({ from: addr, gasLimit: 1000000 });
   c.end(res.gasUsed);
   console.log(`[${res.gasUsed} GAS] Added ${codes.length} codes`);
 
@@ -640,7 +657,7 @@ export async function mintNFT(chal, pubKey, startTime, addr) {
   const c = startCall("VcertNFT#mintNFT");
   const res = await vehi_contract.methods
     .mintNFT(chal, pubKey, startTime)
-    .send({ from: addr });
+    .send({ from: addr, gasLimit: 1000000 });
   c.end(res.gasUsed);
   const id = res.events.NFTMinted.returnValues["0"];
   console.log(
@@ -669,7 +686,7 @@ export async function setNFTSignature(addr, id, sig) {
   const c = startCall("VcertNFT#setSignature");
   const res = await vehi_contract.methods
     .setSignature(sig, id)
-    .send({ from: addr });
+    .send({ from: addr, gasLimit: 1000000 });
   c.end(res.gasUsed);
   console.log(`[${res.gasUsed} GAS] NFT [${id}] - signature: ${sig}`);
 }

@@ -38,4 +38,7 @@ node vehicle_exchange.js
 ### Simulate everything, with 100 NFT issuance
 ```bash
 bash test-protocol.sh
+
+# Using the ganache blockchain
+USE_GANACHE=1 bash test-protocol.sh
 ```
